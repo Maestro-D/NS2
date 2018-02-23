@@ -1,0 +1,26 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/qbayle/Test_ssh/spatch/libssh_examples/sample_ssh_server/samplesshd-kbdint.c
+config.h
+/home/qbayle/Test_ssh/spatch/libssh_examples/sample_ssh_server/config.h
+libssh/libssh.h
+-
+libssh/server.h
+-
+argp.h
+-
+stdlib.h
+-
+string.h
+-
+stdio.h
+-
+
+config.h
+

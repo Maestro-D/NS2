@@ -1,0 +1,5 @@
+/home/qbayle/Test_ssh/spatch/libssh_examples/sample_ssh_server/build/CMakeFiles/package.dir
+/home/qbayle/Test_ssh/spatch/libssh_examples/sample_ssh_server/build/CMakeFiles/sample_sshd.dir
+/home/qbayle/Test_ssh/spatch/libssh_examples/sample_ssh_server/build/CMakeFiles/edit_cache.dir
+/home/qbayle/Test_ssh/spatch/libssh_examples/sample_ssh_server/build/CMakeFiles/package_source.dir
+/home/qbayle/Test_ssh/spatch/libssh_examples/sample_ssh_server/build/CMakeFiles/rebuild_cache.dir

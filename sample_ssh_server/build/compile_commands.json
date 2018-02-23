@@ -1,0 +1,7 @@
+[
+{
+  "directory": "/home/qbayle/Test_ssh/spatch/libssh_examples/sample_ssh_server/build",
+  "command": "/usr/bin/cc   -I/home/qbayle/Test_ssh/spatch/libssh_examples/sample_ssh_server/build -I/home/qbayle/Test_ssh/spatch/libssh_examples/sample_ssh_server   -std=gnu99 -pedantic -pedantic-errors -Wall -Wextra -Wshadow -Wmissing-prototypes -Wdeclaration-after-statement -Wunused -Wfloat-equal -Wpointer-arith -Wwrite-strings -Wformat-security -Wmissing-format-attribute -fPIC -fstack-protector -D_LARGEFILE64_SOURCE   -o CMakeFiles/sample_sshd.dir/samplesshd-kbdint.c.o   -c /home/qbayle/Test_ssh/spatch/libssh_examples/sample_ssh_server/samplesshd-kbdint.c",
+  "file": "/home/qbayle/Test_ssh/spatch/libssh_examples/sample_ssh_server/samplesshd-kbdint.c"
+}
+]

@@ -1,0 +1,1 @@
+/usr/bin/cc   -std=gnu99 -pedantic -pedantic-errors -Wall -Wextra -Wshadow -Wmissing-prototypes -Wdeclaration-after-statement -Wunused -Wfloat-equal -Wpointer-arith -Wwrite-strings -Wformat-security -Wmissing-format-attribute -fPIC -fstack-protector -D_LARGEFILE64_SOURCE   CMakeFiles/sample_sshd.dir/samplesshd-kbdint.c.o  -o sample_sshd -rdynamic -lssh 
