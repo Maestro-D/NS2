@@ -1,0 +1,47 @@
+[MainController|+ int main(int ac. char **av)]
+
+[ServerController|+ int run();]
+
+[SshSession|+ int init();+ int close();+ int handleNewSessions();- static void sigchldHandler(int signo);- int _initSignalHandlers();- int _accept();- void _fork();]
+
+[SshChannel|+ static int dataFunction(ssh_session session. ssh_channel channel. void *data. uint32_t len. int is_stderr. void *userdata);+ static int ptyRequest(ssh_session session. ssh_channel channel. const char *term. int cols. int rows. int py. int px. void *userdata);+ static int ptyResize(ssh_session session. ssh_channel channel. int cols. int rows. int py. int px. void *userdata);+ static int execPty(const char *command. struct channel_data_struct *cdata);+ static int execRequest(ssh_session session. ssh_channel channel. const char *command. void *userdata);+ static int shellRequest(ssh_session session. ssh_channel channel. void *userdata);+ static int authenticateUser(ssh_session session. const char *user. const char *pass. void *userdata);+ static ssh_channel channelOpen(ssh_session session. void *userdata);+ static int processStdout(socket_t fd. int revents. void *userdata);+ static int processStderr(socket_t fd. int revents. void *userdata);+ void init();+ SshProxy &proxy();]
+
+[SshProxy|+ vector〈string〉 tokenizeLine(const string &line);+ void interactiveShell(const User &user. const char *command);- bool _dispatchCommand(const User &user. Endpoint *&endpoint. string &alias. const vector〈string〉 tokens. const char *command);- bool _listCommand(const User &user. const vector〈string〉 tokens);- bool _endpointCommand(const User &user. Endpoint *&endpoint. const vector〈string〉 tokens);- bool _aliasCommand(const User &user. Endpoint *&endpoint. string &alias. const vector〈string〉 tokens);- bool _connectCommand(const User &user. Endpoint *&endpoint. string &alias. const vector〈string〉 tokens. const char *command);- bool _helpCommand(const vector〈string〉 tokens);- bool _exitCommand(const vector〈string〉 tokens);]
+
+[PseudoTerminal|+ static int loginTty(int fd);+ static int openPty(int *ptm. int *pts. const struct winsize *winp);+ static int grant(char *pts_name);+ static int unlock(int ptm);+ static int slaveNameReentrant(int ptm. char *pts_name. size_t size);]
+
+[ConfigurationController|+ const vector〈Users *〉 &users();+ const vector〈Endpoint *〉 &endpoints();+ const ServerConfiguration *server();+ const int init();]
+
+[AccessListController|+ const User *authenticateLocalUser(const string &user. const string &password);+ const vector〈Endpoint *〉 getAvailableEndpointsForUser(const User &user);+ const vector〈string〉 getAvailableRemoteUsernamesForUserAtEndpoint(User &user. const Endpoint &endpoint);]
+
+[ConfigurationReader|+ const string configurationFilePath;+ map 〈string. vector 〈pair 〈string. string〉〉〉 getDatas();]
+
+[ServerConfiguration|+ const string port;]
+
+[User|+ const string name;+ const string password;+ vector〈Endpoint *〉 availableEndpoints;]
+
+[Endpoint|+ const string name;+ const string ipAddress;+ const string port;+ map〈User *. vector〈string〉〉 usersAccessControl;]
+
+[MainController]1->1[ServerController]
+[ServerController]1->1[AccessListController]
+[ServerController]1->1[SshSession]
+[ServerController]1->1[SshProxy]
+[ServerController]->[ConfigurationController]
+
+[AccessListController]1->1[ConfigurationController]
+
+[SshSession]1->0..*[SshChannel]
+[SshChannel]0..*->1[PseudoTerminal]
+
+[SshChannel]0..*->1[SshProxy]
+
+[SshProxy]1->1[AccessListController]
+[SshProxy]->[SshClient]
+
+[SshClient]->[Endpoint]
+
+[MainController]1->1[ConfigurationController]
+[ConfigurationController]1->1[ConfigurationReader]
+[ConfigurationController]1->1[ServerConfiguration]
+[ConfigurationController]1->0..*[User]
+[ConfigurationController]1->0..*[Endpoint]

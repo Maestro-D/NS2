@@ -1,0 +1,13 @@
+Source: spatch
+Section: net
+Priority: optional
+Maintainer: ${maintainer}
+Standards-Version: 3.9.8
+Homepage: https://github.com/Grenadingue/spatch
+Vcs-Git: https://github.com/Grenadingue/spatch.git
+Vcs-Browser: https://github.com/Grenadingue/spatch
+
+Package: spatch
+Architecture: ${arch}
+Depends: ${misc:Depends}, libc6, libstdc++6
+Description: An ssh proxy with access control list

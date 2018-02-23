@@ -1,0 +1,21 @@
+pkgname="spatch"
+configfile="config.ini"
+
+if [ -f "/etc/$pkgname/$configfile" ]; then
+  echo
+  echo "Copying new configuration file..."
+  cp -v "/usr/share/$pkgname/$configfile" "/etc/$pkgname/$configfile.new"
+
+  echo
+  echo "Hiding readability of the default configuration file for everyone except root..."
+  chmod -v 600 "/etc/${pkgname}/$configfile.new"
+else
+  echo
+  echo "Copying bare configuration file..."
+  mkdir -pv "/etc/$pkgname"
+  cp -v "/usr/share/$pkgname/$configfile" "/etc/$pkgname/$configfile"
+
+  echo
+  echo "Hiding readability of the configuration file for everyone except root..."
+  chmod -v 600 "/etc/${pkgname}/$configfile"
+fi

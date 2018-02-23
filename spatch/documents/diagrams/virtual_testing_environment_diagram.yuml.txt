@@ -1,0 +1,9 @@
+[Spatch proxy|host port : 55022]
+
+[Endpoint 1|host IP : 10.0.2.4;host port : 55023]
+[Endpoint 2|host IP : 10.0.2.5;host port : 55024]
+[Endpoint 3|host IP : 10.0.2.6;host port : 55025]
+
+[Spatch proxy]<-sshv2->[Endpoint 1]
+[Spatch proxy]<-sshv2->[Endpoint 2]
+[Spatch proxy]<-sshv2->[Endpoint 3]

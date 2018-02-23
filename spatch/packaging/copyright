@@ -1,0 +1,23 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: spatch
+Source: https://github.com/Grenadingue/spatch
+
+Files: *
+Copyright: 2017 ${maintainer}
+License: GPL-3.0
+
+License: GPL-3.0
+ GNU GENERAL PUBLIC LICENSE
+ Version 3, 29 June 2007
+
+ Copyright (C) 2007 Free Software Foundation, Inc. <http://fsf.org/>
+
+ Everyone is permitted to copy and distribute verbatim copies of this license
+ document, but changing it is not allowed.
+
+ This version of the GNU General Public License incorporates the terms and
+ conditions of version 3 of the GNU General Public License, supplemented by
+ the additional permissions listed below.
+
+ https://www.gnu.org/licenses/gpl-3.0.en.html
+ https://opensource.org/licenses/gpl-3.0.html
