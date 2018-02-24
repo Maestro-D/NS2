@@ -31,8 +31,6 @@ static int 	authenticate(ssh_session session) {
     	prompts[0] = "Real name: ";
     	prompts[1] = "Password: ";
 	
-	printf("JE suis dans authenticate");
-
 	do {
 		message=ssh_message_get(session);
         	if(!message)
@@ -41,7 +39,6 @@ static int 	authenticate(ssh_session session) {
             		case SSH_REQUEST_AUTH:
                 		switch(ssh_message_subtype(message)){
                     			case SSH_AUTH_METHOD_PASSWORD:
-						printf("METHODE PASSWORDDDDDDDDDDDDD\n");
                         			printf("User %s wants to auth with pass %s\n",
                                				ssh_message_auth_user(message),
                                				ssh_message_auth_password(message));
@@ -58,14 +55,12 @@ static int 	authenticate(ssh_session session) {
                         			break;
 					case SSH_AUTH_METHOD_INTERACTIVE:
 
-						printf("JE SUIS UNE SOURIE MA GUEULE\n");
 						ssh_message_auth_interactive_request(message, name, instruction, 2, prompts, echo);
                                 		ssh_message_auth_reply_success(message,0);
                                 		ssh_message_free(message);
                                 		return 1;
                     			case SSH_AUTH_METHOD_NONE:
                     			default:
-						printf("METHODE AUTREEEEEEEE\n");
                         			printf("User %s wants to auth with unknown auth %d\n",
                                				ssh_message_auth_user(message),
                                				ssh_message_subtype(message));
@@ -77,7 +72,6 @@ static int 	authenticate(ssh_session session) {
                 		}
                 		break;
             			default:
-				printf("TA MERE LA DEPUEDQFKJQBFKJQSJKDFFS\n");
                 		ssh_message_auth_set_methods(message,
                                 	SSH_AUTH_METHOD_PASSWORD |
                                         SSH_AUTH_METHOD_INTERACTIVE);
@@ -121,8 +115,6 @@ int 	main() {
     	int i;
     	int r;
 	
-	printf("DEBUT");
-	
 	// Open session and set options
   	sshbind = ssh_bind_new();
     	session = ssh_new();
@@ -131,8 +123,6 @@ int 	main() {
   	ssh_bind_options_set(sshbind, SSH_BIND_OPTIONS_BINDADDR, "localhost");
   	ssh_bind_options_set(sshbind, SSH_BIND_OPTIONS_BINDPORT, &port);
 	ssh_bind_options_set(sshbind, SSH_BIND_OPTIONS_RSAKEY, "/etc/ssh/ssh_host_rsa_key");
-
-	printf("APRES_OPEN_SESSION");
 
 	if(ssh_bind_listen(sshbind) < 0) {
         	printf("Error listening to socket: %s\n", ssh_get_error(sshbind));
