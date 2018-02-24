@@ -79,19 +79,21 @@ int kbhit()
     return select(1, &fds, NULL, NULL, &tv);
 }
 
-int interactive_shell_session(ssh_session session)
+int interactive_shell_session(ssh_session session, ssh_channel channel, char *endpoint, int port)
 {
   char buffer[256];
   int nbytes, nwritten;
   int rc;
-  ssh_channel channel;
+  //ssh_channel channel;
 
-  channel = ssh_channel_new(session);
+  /*channel = ssh_channel_new(session);
   if (channel == NULL)
     return SSH_ERROR;
-  rc = ssh_channel_open_session(channel);
+  rc = ssh_channel_open_session(channel);*/
+  rc = ssh_channel_open_forward(channel, endpoint, port, "localhost", 55);
   if (rc != SSH_OK)
   {
+    printf("\nError : interactive shell session : failed to forward channel\n");
     ssh_channel_free(channel);
     return rc;
   }
@@ -176,7 +178,7 @@ int show_remote_processes(ssh_session session)
   return SSH_OK;
 }
 
-int             forwarding_client(char* user, char* passwd, char* endpoint, int port)
+int             forwarding_client(char* user, char* passwd, char* endpoint, int port, ssh_channel chan)
 {
   ssh_session   my_ssh_session;
   int rc;
@@ -219,7 +221,7 @@ int             forwarding_client(char* user, char* passwd, char* endpoint, int 
     exit(-1);
   }
 
-  interactive_shell_session(my_ssh_session);
+  interactive_shell_session(my_ssh_session, chan, endpoint, port);
 
   ssh_disconnect(my_ssh_session);
   ssh_free(my_ssh_session);

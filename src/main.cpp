@@ -9,8 +9,8 @@
 
 #define SSHD_USER "toto"
 #define SSHD_PASSWORD "toto"
-#define FWD_USER "aiscky"
-#define FWD_PWD "root"
+#define FWD_USER "qbayle"
+#define FWD_PWD "kant124233"
 
 
 static const char *name;
@@ -246,7 +246,7 @@ static int 	authenticate(ssh_session session) {
             else if (strcasecmp(buf, "Exit\n") == 0)
             break;
             else if (strcasecmp(buf, "Connect\n") == 0)
-            forwarding_client(FWD_USER, FWD_PWD, "localhost", 22);
+            forwarding_client(FWD_USER, FWD_PWD, "localhost", 22, chan);
             else
             ssh_channel_write(chan, buf, i);
             memset(buf, 0, strlen(buf));
