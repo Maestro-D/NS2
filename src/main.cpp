@@ -98,6 +98,15 @@ static int	print_chan(ssh_channel chan, char *str) {
 	return 1;
 }
 
+static int	menu(ssh_channel chan) {
+        print_chan(chan, "Voici les actions disponibles :\n");
+        print_chan(chan, "List - Affiche la liste des serveurs dispobibles\n");
+        print_chan(chan, "Connect [server] - Forwarding vers le serveur choisi\n");
+        print_chan(chan, "Help - Affiche ces commandes\n");
+        print_chan(chan, "Exit - Quitter le programme\n");
+	return 0;
+}
+
 static int	port = 55;
 
 int 	main() {
@@ -199,26 +208,26 @@ int 	main() {
         	return 1;
     	}
 	
-	printf("it works !\n");
-	print_chan(chan, "Bienvenu sur le proxy spatch");
+	print_chan(chan, "\n\n\n\n\n\n\n\nBienvenu sur le proxy spatch !\n");
+	menu(chan);
     	do {
+		memset(buf, 0, strlen(buf));
         	i = ssh_channel_read(chan,buf, 2048, 0);
-		//printf("Contenu du buffer wesh : %s\n", buf);
         	if (i > 0) {
             		if(*buf == '^C' || *buf == '^D')
-                    	break;
+                    		break;
             		if (i == 1 && *buf == '\r')
                 		ssh_channel_write(chan, "\r\n", 2);
             		else if (strcasecmp(buf, "List\n") == 0)
-                                ssh_channel_write(chan, "SCOUBI", 6);
+                                print_chan(chan, "Serveurs diponibles :\n192.168.1.15\n192.174.0.3\n12.12.12.12\n");
+			else if (strcasecmp(buf, "Help\n") == 0)
+				menu(chan);
+			else if (strcasecmp(buf, "Exit\n") == 0)
+				break;
 			else
                 		ssh_channel_write(chan, buf, i);
 			memset(buf, 0, strlen(buf));
-            		/*if (write(1,buf,i) < 0) {
-                		printf("error writing to buffer\n");
-                		return 1;
-            		}*/
-        	}
+            	}
     	} while (i>0);
     	ssh_channel_close(chan);
     	ssh_disconnect(session);
