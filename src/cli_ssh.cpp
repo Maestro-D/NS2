@@ -70,6 +70,66 @@ int verify_knownhost(ssh_session session)
   return 0;
 }
 
+int kbhit()
+{
+    struct timeval tv = { 0L, 0L };
+    fd_set fds;
+    FD_ZERO(&fds);
+    FD_SET(0, &fds);
+    return select(1, &fds, NULL, NULL, &tv);
+}
+
+int interactive_shell_session(ssh_session session)
+{
+  char buffer[256];
+  int nbytes, nwritten;
+  int rc;
+  ssh_channel channel;
+
+  channel = ssh_channel_new(session);
+  if (channel == NULL)
+    return SSH_ERROR;
+  rc = ssh_channel_open_session(channel);
+  if (rc != SSH_OK)
+  {
+    ssh_channel_free(channel);
+    return rc;
+  }
+
+  rc = ssh_channel_request_pty(channel);
+  if (rc != SSH_OK) return rc;
+  rc = ssh_channel_change_pty_size(channel, 80, 24);
+  if (rc != SSH_OK) return rc;
+  rc = ssh_channel_request_shell(channel);
+  if (rc != SSH_OK) return rc;
+
+
+  while (ssh_channel_is_open(channel) &&
+         !ssh_channel_is_eof(channel))
+  {
+    nbytes = ssh_channel_read_nonblocking(channel, buffer, sizeof(buffer), 0);
+    if (nbytes < 0) return SSH_ERROR;
+    if (nbytes > 0)
+    {
+      nwritten = write(1, buffer, nbytes);
+      if (nwritten != nbytes) return SSH_ERROR;
+    }
+    if (!kbhit())
+    {
+      usleep(50000L); // 0.05 second
+      continue;
+    }
+    nbytes = read(0, buffer, sizeof(buffer));
+    if (nbytes < 0) return SSH_ERROR;
+    if (nbytes > 0)
+    {
+      nwritten = ssh_channel_write(channel, buffer, nbytes);
+      if (nwritten != nbytes) return SSH_ERROR;
+    }
+  }
+  return rc;
+}
+
 int show_remote_processes(ssh_session session)
 {
   ssh_channel channel;
@@ -159,7 +219,8 @@ int             forwarding_client(char* user, char* passwd, char* endpoint, int 
     exit(-1);
   }
 
-  show_remote_processes(my_ssh_session);
+  interactive_shell_session(my_ssh_session);
+
   ssh_disconnect(my_ssh_session);
   ssh_free(my_ssh_session);
 }
