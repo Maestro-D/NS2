@@ -236,17 +236,19 @@ static int 	authenticate(ssh_session session) {
           i = ssh_channel_read(chan,buf, 2048, 0);
           if (i > 0) {
             if(*buf == '^C' || *buf == '^D')
-            break;
+            	break;
             if (i == 1 && *buf == '\r')
-            ssh_channel_write(chan, "\r\n", 2);
+            	ssh_channel_write(chan, "\r\n", 2);
             else if (strcasecmp(buf, "List\n") == 0)
-            print_chan(chan, "Serveurs diponibles :\n192.168.1.15\n192.174.0.3\n12.12.12.12\n");
+            	print_chan(chan, "Serveurs diponibles :\n192.168.1.15\n192.174.0.3\n12.12.12.12\n");
             else if (strcasecmp(buf, "Help\n") == 0)
-            menu(chan);
+            	menu(chan);
             else if (strcasecmp(buf, "Exit\n") == 0)
-            break;
-            else if (strcasecmp(buf, "Connect\n") == 0)
-            forwarding_client(FWD_USER, FWD_PWD, "localhost", 22, chan);
+            	break;
+            else if (strcasecmp(buf, "Connect\n") == 0) {
+            		print_chan(chan, "JE SUIS DANS LE CONNECT");
+			forwarding_client(FWD_USER, FWD_PWD, "localhost", 22, chan);
+		}
             else
             ssh_channel_write(chan, buf, i);
             memset(buf, 0, strlen(buf));

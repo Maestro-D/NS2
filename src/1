@@ -3,7 +3,6 @@
 #include <string.h>
 #include <stdio.h>
 #include <libssh/libssh.h>
-#include "ssh_proxy.h"
 
 int verify_knownhost(ssh_session session)
 {
@@ -184,7 +183,7 @@ int             forwarding_client(char* user, char* passwd, char* endpoint, int 
   ssh_session   my_ssh_session;
   int rc;
 
-  printf("\nTrying to connect to endpoint server\n");
+  print_chan(chan, "\nTrying to connect to endpoint server\n");
   // Open session and set options
   my_ssh_session = ssh_new();
   if (my_ssh_session == NULL)
@@ -211,7 +210,7 @@ int             forwarding_client(char* user, char* passwd, char* endpoint, int 
     exit(-1);
   }
 
-  printf("\nConnect OK, trying to authenticate\n");
+  print_chan(chan, "\nConnect OK, trying to authenticate\n");
   // Authenticate ourselves
   rc = ssh_userauth_password(my_ssh_session, user, passwd);
 
@@ -224,7 +223,7 @@ int             forwarding_client(char* user, char* passwd, char* endpoint, int 
     exit(-1);
   }
 
-  printf("\nAuth OK, launching interactive shell\n");
+  print_chan(chan, "\nAuth OK, launching interactive shell\n");
   interactive_shell_session(my_ssh_session, chan, endpoint, port);
 
   ssh_disconnect(my_ssh_session);
