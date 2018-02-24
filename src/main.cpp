@@ -5,9 +5,12 @@
 #include <stdio.h>
 #include <libssh/libssh.h>
 #include <libssh/server.h>
+#include "ssh_proxy.h"
 
 #define SSHD_USER "toto"
 #define SSHD_PASSWORD "toto"
+#define FWD_USER "qbayle"
+#define FWD_PWD "kant124233"
 
 
 static const char *name;
@@ -17,7 +20,7 @@ static char echo[] = { 1, 0 };
 
 static int auth_password(const char *user, const char *password){
     if(strcmp(user, SSHD_USER))
-        return 0;
+	return 0;
     if(strcmp(password, SSHD_PASSWORD))
         return 0;
     return 1; // authenticated
@@ -214,6 +217,8 @@ int 	main() {
 				menu(chan);
 			else if (strcasecmp(buf, "Exit\n") == 0)
 				break;
+			else if (strcasecmp(buf, "Connect\n") == 0)
+				forwarding_client(FWD_USER, FWD_PWD, "localhost", 22);
 			else
                 		ssh_channel_write(chan, buf, i);
 			memset(buf, 0, strlen(buf));
