@@ -148,6 +148,8 @@ int show_remote_processes(ssh_session session)
     ssh_channel_free(channel);
     return rc;
   }
+
+  printf("\nJe suis bien connecté au serveur endpoint\n");
   rc = ssh_channel_request_exec(channel, "uname -a && hostname");
   if (rc != SSH_OK)
   {
@@ -225,7 +227,8 @@ int             forwarding_client(char* user, char* passwd, char* endpoint, int 
   }
 
   printf("\nAuth OK, launching interactive shell\n");
-  interactive_shell_session(my_ssh_session, chan, endpoint, port);
+  //interactive_shell_session(my_ssh_session, chan, endpoint, port);
+  show_remote_processes(my_ssh_session);
 
   ssh_disconnect(my_ssh_session);
   ssh_free(my_ssh_session);

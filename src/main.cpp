@@ -246,7 +246,7 @@ static int 	authenticate(ssh_session session) {
             else if (strcasecmp(buf, "Exit\n") == 0)
             	break;
             else if (strcasecmp(buf, "Connect\n") == 0) {
-            		print_chan(chan, "JE SUIS DANS LE CONNECT");
+            		print_chan(chan, "JE SUIS DANS LE CONNECT\n");
 			forwarding_client(FWD_USER, FWD_PWD, "localhost", 22, chan);
 		}
             else
