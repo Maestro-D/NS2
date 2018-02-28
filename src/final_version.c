@@ -59,21 +59,40 @@ static int copy_client_to_endpoint(ssh_session session, ssh_channel channel, voi
   (void)channel;
   (void)is_stderr;
 
-  printf("Trying to write to client\n");
-  // sz = ssh_channel_write(endpoint_channel, data, len);
+  // printf("WRITING ON ENDPOINT\n");
+  sz = ssh_channel_write(endpoint_channel, data, len);
+  return sz;
+}
+
+static int copy_endpoint_to_client(ssh_session session, ssh_channel channel, void *data, uint32_t len, int is_stderr, void *userdata) {
+  ssh_channel client_channel = *(ssh_channel*)userdata;
+  int sz;
+  (void)session;
+  (void)channel;
+  (void)is_stderr;
+
+  // printf("WRITING ON CLIENT\n");
+  sz = ssh_channel_write(client_channel, data, len);
   return sz;
 }
 
 static void chan_close(ssh_session session, ssh_channel channel, void *userdata) {
-  ssh_channel endpoint_channel = *(ssh_channel*)userdata;
+  // ssh_channel endpoint_channel = *(ssh_channel*)userdata;
   (void)session;
   (void)channel;
 
-  ssh_channel_close(endpoint_channel);
+  ssh_channel_close(channel);
 }
 
 struct ssh_channel_callbacks_struct cb = {
   .channel_data_function = copy_client_to_endpoint,
+  .channel_eof_function = chan_close,
+  .channel_close_function = chan_close,
+  .userdata = NULL
+};
+
+struct ssh_channel_callbacks_struct cc = {
+  .channel_data_function = copy_endpoint_to_client,
   .channel_eof_function = chan_close,
   .channel_close_function = chan_close,
   .userdata = NULL
@@ -177,22 +196,78 @@ int main() {
     return 1;
   }
 
-  // ssh_channel_write(chan, "\n\n\n\n\n\n\n\nBienvenu sur le proxy spatch !\n", strlen("\n\n\n\n\n\n\n\nBienvenu sur le proxy spatch !\n"));
-
-  // cb.userdata = &chan;
-  // ssh_callbacks_init(&cb);
-  // ssh_set_channel_callbacks(chan, &cb);
   //
   // ssh_event event = ssh_event_new();
+  //
+  // if(ssh_event_add_session(event, session) != SSH_OK) {
+  //   printf("Couldn't add the session to the event\n");
+  //   return -1;
+  // }
   //
   // do {
   //   ssh_event_dopoll(event, 1000);
   // } while(!ssh_channel_is_closed(chan));
 
-  char buffer[2048];
-  unsigned int nbytes = ssh_channel_read(chan, buffer, 2048, 0);
-  if (nbytes > 0)
-    write(1, buffer, nbytes);
+  ssh_session client_session = ssh_new();
+
+  ssh_options_set(client_session, SSH_OPTIONS_HOST, "localhost");
+  ssh_options_set(client_session, SSH_OPTIONS_USER, "aiscky");
+
+  printf("CONNECT\n");
+
+  rc = ssh_connect(client_session);
+  if (rc != SSH_OK){
+    printf("Error connecting to localhost: %s", ssh_get_error(client_session));
+    return 1;
+  }
+
+  printf("AUTH\n");
+  rc = ssh_userauth_password(client_session, "aiscky", "root");
+  if (rc != SSH_AUTH_SUCCESS){
+    printf("Authentication failed: %s\n",ssh_get_error(client_session));
+    return 1;
+  }
+
+  printf("CHANNEL\n");
+  ssh_channel client_channel = ssh_channel_new(client_session);
+  if (client_channel == NULL)
+  return SSH_ERROR;
+  rc = ssh_channel_open_session(client_channel);
+  if (rc != SSH_OK)
+  {
+    ssh_channel_free(client_channel);
+    return rc;
+  }
+
+  rc = ssh_channel_request_pty(client_channel);
+  if (rc != SSH_OK) return rc;
+
+  // rc = ssh_channel_change_pty_size(channel, 80, 24);
+  // if (rc != SSH_OK) return rc;
+
+  rc = ssh_channel_request_shell(client_channel);
+  if (rc != SSH_OK) return rc;
+
+  cb.userdata = &client_channel;
+  ssh_callbacks_init(&cb);
+  ssh_set_channel_callbacks(chan, &cb);
+
+  cc.userdata = &chan;
+  ssh_callbacks_init(&cc);
+  ssh_set_channel_callbacks(client_channel, &cc);
+
+  ssh_event event = ssh_event_new();
+
+  if(ssh_event_add_session(event, session) != SSH_OK) {
+    printf("Couldn't add the session to the event\n");
+    return -1;
+  }
+
+  do {
+    ssh_event_dopoll(event, 1000);
+  } while(!ssh_channel_is_closed(chan));
+
+  printf("ENDING\n");
 
   ssh_channel_close(chan);
   ssh_disconnect(session);
