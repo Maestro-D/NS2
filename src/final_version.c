@@ -72,7 +72,7 @@ static int copy_endpoint_to_client(ssh_session session, ssh_channel channel, voi
   (void)is_stderr;
 
   // printf("WRITING ON CLIENT\n");
-  sz = ssh_channel_write(client_channel, data, len);
+  sz = ssh_channel_write(client_channel , data, len);
   return sz;
 }
 
@@ -259,6 +259,10 @@ int main() {
   ssh_event event = ssh_event_new();
 
   if(ssh_event_add_session(event, session) != SSH_OK) {
+    printf("Couldn't add the session to the event\n");
+    return -1;
+  }
+  if(ssh_event_add_session(event, client_session) != SSH_OK) {
     printf("Couldn't add the session to the event\n");
     return -1;
   }
