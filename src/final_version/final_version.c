@@ -109,13 +109,9 @@ int main() {
   ssh_channel chan=0;
   int rc = 0, auth = 0, shell = 0, sftp = 0;
 
-  printf("Je suis avant\n");
   struct endpointStruct endPS = {};
-  printf("J'ai initialisé OK\n");
   endPS = fillEndpointAddr(endPS);
-  printf("Je suis sortie du fill OK\n");
-  printf("Addresse 1 : %s, port 1 : %s\n", endPS.endpointAddr[0], endPS.endpointPort[0]);
-  printf("J'ai foiré non?\n");
+  
   sshbind = ssh_bind_new();
   session = ssh_new();
 
