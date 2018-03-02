@@ -18,5 +18,8 @@ struct	endpointStruct {
 struct endpointStruct fillEndpointAddr(struct endpointStruct myStruct);
 struct endpointStruct fillTabAddr(struct endpointStruct myStruct, int cpt, char *tab2);
 struct endpointStruct fillTabPort(struct endpointStruct myStruct, int cpt, char *tab2);
+struct userStruct fillUserCredential(struct userStruct myStruct);
+struct userStruct fillUserEndpoint(struct userStruct myStruct);
+struct userStruct fillList(struct userStruct myStruct, int cpt, char *tab2);
 
 #endif //SSHPROXY_SSH_PROXY_H
